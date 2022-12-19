@@ -1,76 +1,76 @@
 'use strict';
-const secretNumber = Math.trunc(Math.random() * 10 + 1);
-let score = 5;
 
-//message
-function displayMessage(message) {
-  document.querySelector('.message').textContent = message;
-}
+const clickButton = document.querySelector('.check');
+const userNumber = document.querySelector('.guess');
+const message = document.querySelector('.message');
+const numWin = document.querySelector('.number');
+const resetGame = document.querySelector('.again');
+const soundWin = new Audio('Sounds/win.mp3');
+soundWin.volume = 0.05;
+const soundLose = new Audio('Sounds/lose.wav');
+soundLose.volume = 0.5;
+let score = document.querySelector('.score');
+let scoreChange = Number((score.textContent = '5'));
+let highscore = document.querySelector('.highscore');
+let secretNumber = Math.trunc(Math.random() * 20 + 1);
 
-//Again Function-Refresh page
-document.querySelector('.again').addEventListener('click', function () {
-  window.location.reload();
-});
+console.log(secretNumber);
 
-//Input data--------------------------------------------------
-document.querySelector('.check').addEventListener('click', function () {
-  const guess = Number(document.querySelector('.guess').value);
-  if (!guess) {
-    displayMessage('Invalid!!!Put a number 1-20.');
+// ΟΤΑΝ ΚΑΝΕΙΣ ΚΛΙΚ "ΜΑΝΤΕΨΕ"
+clickButton.addEventListener('click', function () {
+  const guess = Number(userNumber.value);
 
-    //Winner---------------------------------------------
+  // ΟΤΑΝ ΤΟ ΝΟΥΜΕΡΟ ΔΝ ΕΙΝΑΙ ΑΠΟΔΕΚΤΟ
+  if (guess < 1 || guess > 20) {
+    message.textContent = `Βάλε ενα νούμερο απο 1-20`;
+
+    // ΟΤΑΝ ΒΡΙΣΚΕΙΣ ΤΟ ΝΟΥΜΕΡΟ
   } else if (guess === secretNumber) {
-    displayMessage('Winner!!!');
-    document.querySelector('body').style.backgroundColor = 'green';
-    document.querySelector('.number').style.width = '30rem';
-    document.querySelector('.number').textContent = secretNumber;
-    let highScore = 0;
-    if (score > highScore) {
-      highScore = score;
-      document.querySelector('.highscore').textContent = highScore;
-    }
+    clickButton.style.display = 'none';
+    message.textContent = 'Μπράβο βρήκες τον αριθμό!!!';
+    soundWin.play();
+    numWin.textContent = secretNumber;
+    document.body.style.backgroundColor = 'green';
+    if (Number(highscore.textContent) < scoreChange)
+      highscore.textContent = scoreChange;
   }
 
-  //Too High and Too  combined
+  // ΟΤΑΝ ΕΙΝΑΙ ΜΙΚΡΟΤΕΡΟ Η ΜΕΓΑΛΥΤΕΡΟ Τ ΝΟΥΜΕΡΟ
   else if (guess !== secretNumber) {
-    displayMessage(guess > secretNumber ? 'Too High' : 'Too Low');
-    score--;
-    document.querySelector('.score').textContent = score;
-  } else {
-    displayMessage('Εχασες , εισαι τερμα ασχετος!!!');
-    document.querySelector('.score').textContent = 0;
-    document.querySelector('body').style.backgroundColor = 'red';
-    document.querySelector('.number').style.width = '30rem';
+    message.textContent =
+      guess > secretNumber
+        ? 'Πολύ Ψηλά,βάλε μικρότερο αριθμό'
+        : 'Πολύ Χαμηλά,βάλε μεγαλύτερο αριθμό';
+    scoreChange--;
+    score.textContent = scoreChange;
+  }
+
+  // OTAN XANEIS
+  if (scoreChange < 1) {
+    numWin.textContent = 'Έχασες';
+    numWin.style.width = '50%';
+    message.textContent = 'Προσπάθησε ξανά';
+    document.body.style.backgroundColor = 'red';
+    userNumber.style.display = 'none';
+    clickButton.style.display = 'none';
+    soundLose.play();
   }
 });
 
-//Too High--------------------------------------------
-// else if (guess > secretNumber) {
-//   if (score > 1) {
-//     document.querySelector('.message').textContent = 'Too High';
-//     score--;
-//     document.querySelector('.score').textContent = score;
-//   } else {
-//     document.querySelector('.message').textContent =
-//       'Εχασες , εισαι τερμα ασχετος!!!';
-//     document.querySelector('.score').textContent = 0;
-//     document.querySelector('body').style.backgroundColor = 'red';
-//     document.querySelector('.number').style.width = '30rem';
-//   }
-// }
-
-// //Too Low--------------------------------------------------
-// else if (guess < secretNumber) {
-//   if (score > 1) {
-//     document.querySelector('.message').textContent = 'Too Low';
-//     score--;
-//     document.querySelector('.score').textContent = score;
-//   } else {
-//     document.querySelector('.message').textContent =
-//       'Εχασες ,εισαι τερμα ασχετος!!!';
-//     document.querySelector('.score').textContent = 0;
-//     document.querySelector('body').style.backgroundColor = 'red';
-//     document.querySelector('.number').style.width = '30rem';
-//   }
-
-//HighScore
+// ΚΑΝΕΙ RESET ΤΟ GAME
+resetGame.addEventListener('click', function () {
+  score.textContent = '5';
+  message.textContent = 'Aρχίστε να μαντεύετε...';
+  document.body.style.backgroundColor = '#222';
+  userNumber.style.display = 'block';
+  clickButton.style.display = 'block';
+  numWin.textContent = '?';
+  userNumber.value = '';
+  scoreChange = 5;
+  secretNumber = Math.trunc(Math.random() * 20 + 1);
+  console.log(secretNumber);
+  soundWin.pause();
+  soundWin.currentTime = 0;
+  soundLose.pause();
+  soundLose.currentTime = 0;
+});
