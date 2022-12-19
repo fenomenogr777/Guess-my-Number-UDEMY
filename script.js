@@ -73,4 +73,5 @@ resetGame.addEventListener('click', function () {
   soundWin.currentTime = 0;
   soundLose.pause();
   soundLose.currentTime = 0;
+  numWin.style.width = '15rem';
 });
