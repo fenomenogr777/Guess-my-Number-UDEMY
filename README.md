@@ -1,1 +1,1 @@
-# Guess-my-Number-game-DOM-
+# Guess-my-Number-GAME
